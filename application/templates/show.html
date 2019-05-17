@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+
+{%block content%}
+<div class="main-wrap" style="min-width: 850px;">
+  <div class="main_content">
+    <div class="header">
+      {{tablename}} <a class="stanlink" href="/">| Меню</a>
+    </div>
+    <div class="lineblock">
+    </div>
+                                                                                        {#  User #}
+{% if tablename=='Пользователи' %}
+    {% if role==1 %}
+    <div class="buttons">
+      <a href="/add/user" class="stanlink">Добавить пользователя</a>
+    </div>
+{% endif %}
+
+    <table cellspacing='0'>
+        <tr>
+            <th>№</th>
+            <th>Логин</th>
+            <th>Пароль</th>
+            <th>Роль</th>
+
+            {% if role==1 %}
+                <th width="34"></th>
+            {%endif%}
+        </tr>
+
+        {% for item in table %}
+           <tr>
+               <td>{{ loop.index }}</td>
+
+
+               <td>{{item.login}}</td>
+               <td>{{item.password}}</td>
+
+               <td>
+                   {% if item.role==1 %}
+                       Админ
+                   {% endif %}
+                   {% if item.role==2 %}
+                       Менеджер
+                   {% endif %}
+                   {% if item.role==3 %}
+                       Работник склада
+                   {% endif %}
+               </td>
+{#  Доступ для админа и менеджера #}
+        {% if role==1 %}
+            <td>
+                <form action={{ url_for('delete', table="Пользователи") }} method="GET">
+                    <input type="hidden" name="iddel" value="{{item.id}}">
+                    <button class="button_delete"></button>
+                </form>
+
+                <form action={{ url_for('edit', table="Пользователи")}} method="GET">
+                    <input type="hidden" name="idedit" value="{{item.id}}">
+                    <button class="button_edit"></button>
+                </form>
+            </td>
+        {% endif %}
+       </tr>
+       {%endfor%}
+    </table>
+{% endif %}
+                                                                            {# Контрагенты #}
+{% if tablename=='Контрагенты' %}
+    {% if role==1 or role==2 %}
+        <div class="buttons">
+          <a href="/add/contractor" class="stanlink">Добавить контрагента</a>
+        </div>
+    {% endif %}
+
+    <table cellspacing='0'>
+        <tr>
+            <th>№</th>
+            <th>Название</th>
+            <th>Роль</th>
+
+            {% if role==1 or role==2 %}
+                <th width="34"></th>
+            {%endif%}
+        </tr>
+
+        {% for item in table %}
+           <tr>
+               <td>{{ loop.index }}</td>
+
+               <td>{{item.name}}</td>
+
+               <td>
+                   {% if item.role==1 %}
+                       Продавец
+                   {% elif item.role==2 %}
+                       Покупатель
+                   {%endif%}
+               </td>
+            {% if role==1 or role==2 %}
+            <td>
+                <form action={{ url_for('delete', table="Контрагенты") }} method="GET">
+                    <input type="hidden" name="iddel" value="{{item.id}}">
+                    <button class="button_delete"></button>
+                </form>
+
+                <form action={{ url_for('edit', table="Контрагенты")}} method="GET">
+                    <input type="hidden" name="idedit" value="{{item.id}}">
+                    <button class="button_edit"></button>
+                </form>
+            </td>
+            {% endif %}
+       </tr>
+       {% endfor %}
+    </table>
+{% endif %}
+                                                                                    {#Products#}
+{% if tablename=='Товары' %}
+{#      think about access for manager role 2#}
+    {% if role==1 or role==2 %}
+    <div class="buttons">
+      <a href="/add/product" class="stanlink">Добавить товар</a>
+    </div>
+    {% endif %}
+
+    <table cellspacing='0'>
+        <tr>
+            <th>№</th>
+            <th>Название</th>
+
+            {% if role==1 %}
+                <th width="34"></th>
+            {% endif %}
+        </tr>
+        {% set count = [1] %}
+        {% for item in table %}
+       <tr>
+           <td>{{ count[0] }}</td>
+                {% if count.append(count.pop() + 1) %}{% endif %}
+           <td>{{item.name}}</td>
+
+            {% if role==1 %}
+            <td>
+                 <form action={{ url_for('delete', table="Товары") }} method="GET">
+                    <input type="hidden" name="iddel" value="{{item.id}}">
+                    <button class="button_delete"></button>
+                </form>
+
+                <form action={{ url_for('edit', table="Товары")}} method="GET">
+                    <input type="hidden" name="idedit" value="{{item.id}}">
+                    <button class="button_edit"></button>
+                </form>
+                </td>
+            {% endif %}
+       </tr>
+       {%endfor%}
+    </table>
+{% endif %}
+                                                                                    {#Custs#}
+{% if tablename=='Накладные' or tablename=='Приход' or tablename=='Реализация'%}
+    {% if role==2 %}
+        <div class="buttons">
+          <a href="/add/cust" class="stanlink">Создать накладную</a>
+        </div>
+    {% endif %}
+
+    <table cellspacing='0'>
+        <tr>
+            <th>№</th>
+            <th>Название</th>
+            <th>Дата</th>
+            <th>Тип</th>
+            <th>Контрагент</th>
+            <th>Склад</th>
+
+            {% if role==2 %}
+                <th width="34"></th>
+            {% endif %}
+        </tr>
+
+        {% for item in table %}
+           <tr>
+               <td>{{ loop.index }}</td>
+               <td>
+                   <form action={{ url_for('show', table='Товары в накладной')}} method="GET">
+                       <input type="hidden" name="cust" value="{{item.id}}">
+                       <button style=" font-family: 'Poiret One', cursive;color:#fff;font-size:18px; background: transparent;border: 0;"> {{item.name }} </button>
+                   </form>
+               </td>
+               <td>{{item.date}}</td>
+               <td>
+                   {% if item.type==1 %}
+                       Приходная
+                   {% elif item.type==2 %}
+                       Расходная
+                   {% else %}
+                       Неизвестно
+                   {% endif %}
+               </td>
+           <td>{{item.contractor.name}}</td>
+           <td>{{item.warehouse.name}}</td>
+            {% if role==2 %}
+                <td>
+                 <form action={{ url_for('delete_cust') }} method="GET">
+                    <input type="hidden" name="iddel" value="{{item.id}}">
+                    <button class="button_delete"></button>
+                </form>
+{#                    <form action={{ url_for('edit', table="Контрагенты")}} method="GET">#}
+{#                        <input type="hidden" name="code" value="{{item.id}}">#}
+{#                        <button class="button_edit"></button>#}
+{#                    </form>#}
+                </td>
+            {% endif %}
+       </tr>
+       {% endfor %}
+    </table>
+{% endif %}
+
+
+                                                                                {#  Products on warehouse #}
+{% if tablename=='Товары на складе' %}
+    {% if role==2 %}
+    <div class="buttons">
+      <a href="/addclient" class="stanlink">Добавить товар</a>
+    </div>
+    {% endif %}
+
+    <table cellspacing='0'>
+        <tr>
+            <th>№</th>
+            <th>Товар</th>
+            <th>Количество</th>
+            <th>Цена</th>
+
+{#            {% if role==2 %}#}
+{#                <th width="34"></th>#}
+{#            {%endif%}#}
+        </tr>
+        {% set count = [1] %}
+        {% for item in table %}
+           <tr>
+               <td>{{ count[0] }}</td>
+                {% if count.append(count.pop() + 1) %}{% endif %}
+
+               <td>{{ item[0].name }}</td>
+               <td>{{ item.count }}</td>
+               <td>{{ item.price }}</td>
+{#            {% if role==2 %}#}
+{#            <td>#}
+{#            <form action="/delclient" method="GET">#}
+{#                <input type="hidden" name="code" value="{{item.id}}">#}
+{#                <button class="button_delete"></button>#}
+{#            </form>#}
+{#            <form action="/editclient" method="GET">#}
+{#                <input type="hidden" name="code" value="{{item.id}}">#}
+{#                <button class="button_edit"></button>#}
+{#                </form>#}
+{#            </td>#}
+{#            {% endif %}#}
+        </tr>
+       {% endfor %}
+    </table>
+{% endif %}
+                                                                        {#  products in cust#}
+{% if tablename=='Товары в накладной' %}
+{#    {% if role==2 %}#}
+{#        <div class="buttons">#}
+{#          <a href="/add/pr_to_cust" class="stanlink">Добавить товар</a>#}
+{#        </div>#}
+{#    {% endif %}#}
+
+    <table cellspacing='0'>
+        <tr>
+            <th>№</th>
+            <th>Товар</th>
+            <th>Количество</th>
+            <th>Цена</th>
+
+            {% if role==2 %}
+                <th width="34"></th>
+            {%endif%}
+        </tr>
+
+        {% for item in table %}
+           <tr>
+               <td>{{ loop.index }}</td>
+
+
+               <td>{{item[0].name}}</td>
+               <td>{{ item.count }}</td>
+               <td>{{ item.price }}</td>
+            {% if role==2 %}
+            <td>
+{#            сделать возврат на эту же таблицу #}
+{#            <form action="/delclient" method="GET">#}
+{#                <input type="hidden" name="code" value="{{item.id}}">#}
+{#                <button class="button_delete"></button>#}
+{#            </form>#}
+{#            <form action="/editclient" method="GET">#}
+{#                <input type="hidden" name="code" value="{{item.id}}">#}
+{#                <button class="button_edit"></button>#}
+{#                </form>#}
+            </td>
+            {% endif %}
+         </tr>
+       {% endfor %}
+    </table>
+
+{# Проведение для работника склада #}
+    {% if role==3 %}
+        <form action="{{ url_for('execute') }}" method="GET">
+            <input type="hidden" name="cust_id" value="{{ cust_id }}">
+            <button class="buttons" style="min-width: 35%; margin-left: auto; margin-right: auto; margin-bottom: 15px; font-size: 28px;
+  text-decoration: none;
+  color: white; font-family: 'Poiret One', cursive; cursor: pointer;">Провести</button>
+        </form>
+        {% if ctype==1 %}
+        <form action={{ url_for('show', table="Приход") }} method="GET">
+        {% elif ctype==2 %}
+            <form action={{ url_for('show', table="Реализация") }} method="GET">
+        {% endif%}
+         <button class="buttons" style="min-width: 35%; margin-left: auto; margin-right: auto; margin-bottom: 15px; font-size: 28px;
+  text-decoration: none;
+  color: white; font-family: 'Poiret One', cursive; cursor: pointer;">Назад</button>
+        </form>
+
+
+
+
+
+
+    {% endif %}
+{% endif %}
+
+
+<div class="lineblock">
+    </div>
+  </div>
+</div>
+{% endblock %}

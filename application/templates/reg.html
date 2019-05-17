@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{%block content%}
+<div class="main-wrap">
+    <div class="main_content" style="margin-top: 30%;">
+        <div class="header">
+            Складской учёт
+            <br>
+            <a href="/auth" class="stanlink">Вход</a> | <a href="/reg" class="stanlink">Регистрация</a>
+        </div>
+        <div class="lineblock">
+        </div>
+        <form action="/reg" method="POST">
+            <input placeholder='Логин' type='text' name='login' required>
+            <input placeholder='Пароль' type='password' name='password' required>
+            <p style="color: white; margin-bottom: 2px; margin-top: 6px;">Ваша роль:</p>
+                 <select name='role' style="min-width: 88%;">
+
+                   <option value='2'>Менеджер</option>
+                   <option value='3'>Работник склада</option>
+                   </select>
+            <button class="buttons" style="min-width: 88%; margin-left: auto; margin-right: auto; margin-bottom: 15px; font-size: 28px;
+  text-decoration: none;
+  color: white; font-family: 'Poiret One', cursive; cursor: pointer;">
+                Регистрация
+            </button>
+        </form>
+    </div>
+</div>
+{%endblock%}

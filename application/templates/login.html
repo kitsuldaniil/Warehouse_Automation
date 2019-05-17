@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{%block content%}
+<div class="main-wrap">
+    <div class="main_content" style="margin-top: 30%;">
+        <div class="header">
+            Организация "Коммерческие склады"
+            <br>
+            <a href="/auth" class="stanlink">Вход</a> | <a href="/reg" class="stanlink">Регистрация</a>
+        </div>
+        <div class="lineblock">
+        </div>
+        <form action="/auth" method="POST">
+            <input placeholder='Логин' type='text' name='login' required>
+            <input placeholder='Пароль' type='password' name='password' required>
+            <button class="buttons" style="min-width: 88%; margin-left: auto; margin-right: auto; margin-bottom: 15px; font-size: 28px;
+  text-decoration: none;
+  color: white; font-family: 'Poiret One', cursive; cursor: pointer;">
+                Вход
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

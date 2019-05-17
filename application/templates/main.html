@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{%block content%}
+<div class="main-wrap">
+    <div class="main_content">
+        <div class="header">
+            Организация "Коммерческие склады"
+        </div>
+        <div>
+            <img src="https://www.gradyent.ru/upload/iblock/7ec/7ecc2e0817efd7acad0d722514c1e3fd.jpg" width="595"
+                 height="330" style="border-radius: 10px; ">
+        </div>
+        <div class="lineblock">
+        </div>
+{% if role==1 %}
+        <div class="buttons">
+            <a href={{ url_for('show', table='Пользователи') }} class="stanlink">Пользователи</a>
+        </div>
+        <div class="buttons">
+            <a href={{ url_for('show', table='Товары') }} class="stanlink">Товары в базе</a>
+        </div>
+        <div class="buttons">
+            <a href={{ url_for('show', table='Контрагенты') }} class="stanlink">Контрагенты</a>
+        </div>
+        <div class="buttons">
+            <a href={{ url_for('show', table='Склады') }} class="stanlink">Склады</a>
+        </div>
+{% endif %}
+
+{% if role==2 %}
+        <div class="buttons">
+            <a href={{ url_for('show', table='Контрагенты') }} class="stanlink">Контрагенты</a>
+        </div>
+        <div class="buttons">
+            <a href={{ url_for('show', table='Накладные') }} class="stanlink">Накладные</a>
+        </div>
+
+       <div class="buttons">
+            <a href={{ url_for('show', table='Товары на складе') }} class="stanlink">Товары на складе</a>
+       </div>
+
+        <div class="buttons">
+            <a href={{ url_for('show', table='Товары') }} class="stanlink">Товары в базе</a>
+       </div>
+{% endif %}
+
+{% if role==3 %}
+        <div class="buttons">
+            <a href={{ url_for('show', table='Товары на складе') }} class="stanlink">Товары на складе</a>
+       </div>
+
+          <div class="buttons">
+            <a href={{ url_for('show', table='Приход') }} class="stanlink">Приход</a>
+        </div>
+
+          <div class="buttons">
+            <a href={{ url_for('show', table='Реализация') }} class="stanlink">Реализация</a>
+        </div>
+{% endif %}
+
+    <div class="buttons">
+        <a href={{ url_for('logout') }} class="stanlink">Выход</a>
+    </div>
+    <div class="lineblock">
+    </div>
+    </div>
+</div>
+{% endblock %}
