@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{%block content%}
+<div class="main-wrap">
+  <div class="main_content" style="margin-top: 10%;">
+    <div class="header">
+      Система учета товаров на складе
+    <br>
+      <div class="lineblock">
+    </div>
+      Добавить контрагента
+    </div>
+    <div class="lineblock">
+    </div>
+    <form action={{ url_for('add_contractor') }} method="POST">
+        <input placeholder='Имя' type='text' name='name' required>
+        <select name="role" required style="width: 526px">
+                <option value=1>Продавец</option>
+                <option value=2>Покупатель</option>
+		</select>
+    <button class="buttons" style="min-width: 88%; margin-left: auto; margin-right: auto; margin-bottom: 15px; font-size: 28px;
+  text-decoration: none;
+  color: white; font-family: 'Poiret One', cursive; cursor: pointer;">
+      Добавить</button>
+    </form>
+  </div>
+</div>
+{%endblock%}
