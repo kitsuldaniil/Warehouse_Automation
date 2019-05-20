@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{%block content%}
+<div class="main-wrap">
+  <div class="main_content" style="margin-top: 10%;">
+    <div class="header">
+    <br>
+      <div class="lineblock">
+    </div>
+      Накладная
+    </div>
+    <div class="lineblock">
+    </div>
+    <form action={{ url_for('add_cust') }} method="POST">
+        <input placeholder='Название' type='text' name='name' required>
+        <input placeholder='Дата' type='date' name='date' required>
+
+        <select name="wh" required style="width: 526px">
+            {% for w in wh %}
+                <option value={{ w.id }}>{{ w.name }}</option>
+             {% endfor %}
+		</select>
+
+        <select name="contractor" required style="width: 526px">
+             {% for c in contractors %}
+                <option value={{ c.id }}>{{ c.name }}</option>
+             {% endfor %}
+		</select>
+
+        <select name="type" required style="width: 526px">
+                <option value=1>Приходная</option>
+                <option value=2>Расходная</option>
+		</select>
+    <button class="buttons" style="min-width: 88%; margin-left: auto; margin-right: auto; margin-bottom: 15px; font-size: 28px;
+  text-decoration: none;
+  color: white; font-family: 'Poiret One', cursive; cursor: pointer;">
+      Добавить товары</button>
+    </form>
+  <form action={{ url_for('dash') }}>
+      <button class="buttons" style="min-width: 88%; margin-left: auto; margin-right: auto; margin-bottom: 15px; font-size: 28px;
+  text-decoration: none;
+  color: white; font-family: 'Poiret One', cursive; cursor: pointer;">Выход</button>
+  </form>
+
+  </div>
+</div>
+
+
+
+{#<script type="text/javascript">#}
+{#function addRow(id){#}
+{#    var tbody = document.getElementById(id).getElementsByTagName("TBODY")[0];#}
+{#    var row = document.createElement("TR")#}
+{##}
+{#    var td1 = document.createElement("TD")#}
+{#    td1.appendChild(document.createTextNode(''))#}
+{##}
+{#    var td2 = document.createElement("TD")#}
+{#    td2.appendChild (document.createTextNode(''))#}
+{##}
+{#    var td3 = document.createElement("TD")#}
+{#    td2.appendChild (document.createTextNode(''))#}
+{##}
+{#    row.appendChild(td1);#}
+{#    row.appendChild(td2);#}
+{#    row.appendChild(td3);#}
+{##}
+{#    tbody.appendChild(row);#}
+{#  }#}
+{#</script>#}
+{##}
+{##}
+{##}
+{#<div class="main-wrap" style="min-width: 850px;">#}
+{#  <div class="main_content">#}
+{#    <div class="header">#}
+{#      Создание накладной <a class="stanlink" href="/">| Меню</a>#}
+{#    </div>#}
+{#    <div class="lineblock">#}
+{#    </div>#}
+{#      <table align="center">#}
+{#          <tr>#}
+{#             <button type="button" class="buttons" onclick="addRow('myTable')">Добавить товар</button>#}
+{#              <button type="button" class="buttons" onclick="DelAnswer('Check',0)">Удалить товар</button><br>#}
+{#          </tr>#}
+{#      </table>#}
+{##}
+{#      <table id="myTable" cellspacing="0" border="1">#}
+{#        <tbody>#}
+{#    <tr>#}
+{#        <th>Товар</th>#}
+{#        <th>Количество</th>#}
+{#        <th>Цена</th>#}
+{#    </tr>#}
+{#        </tbody>#}
+{#     </table>#}
+{#<script>#}
+{#var items=1;#}
+{#function AddItem() {#}
+{#div=document.getElementById("items");#}
+{#button=document.getElementById("add");#}
+{#items++;#}
+{#newitem="<strong>Поле " + items + ": </strong>";#}
+{#newitem+="<input type=\"text\" name=\"item" + items;#}
+{#newitem+="\" size=\"45\"><br>";#}
+{#newnode=document.createElement("span");#}
+{#newnode.innerHTML=newitem;#}
+{#div.insertBefore(newnode,button);#}
+
+{#</script>#}
+{##}
+{#</head>#}
+{#<body>#}
+{#<form name="form-bloggood-ru">#}
+{#<div ID="items">#}
+{#<strong>Поле 1: </strong><input type="text" name="item1" size="45"><br>#}
+{#<input type="button" value="Добавить поле+" onClick="AddItem();" ID="add">#}
+{#</div>#}
+{#</form>#}
+{#</body>#}
+{#</html>#}
+{##}
+{##}
+{#  </div>#}
+{#</div>#}
+{##}
+{##}
+{# <div class="lineblock">#}
+{#    </div>#}
+
+{#<center>#}
+{##}
+{##}
+{#<a href="javascript://" onclick="addRow('myTable');return false;">Добавить строку</a>#}
+{#<table id="myTable" cellspacing="0" border="1">#}
+{#  <tbody>#}
+{#    <tr>#}
+{#      <td>row1_column1</td><td>row1_column1</td>#}
+{#    </tr>#}
+{#  </tbody>#}
+{#</table>#}
+{% endblock %}
