@@ -167,3 +167,116 @@ def add_contractor():
         return render_template('action.html', action='Контрагент "' + name + '" был упешно добавлен')
 
     return render_template('addcontractor.html')
+	
+@app.route('/add/contractor', methods=['POST', 'GET'])
+def add_contractor():
+    if 'login' not in session:
+        return render_template('login.html')
+    if request.method == 'POST':
+        name = request.form["name"]
+        role = request.form['role']
+        contractor = Contractor(name, int(role))
+        try:
+            db.session.add(contractor)
+            db.session.commit()
+        except:
+            return render_template('action.html', action='Ошибка подключения к базе данных, попробуйте позже')
+        return render_template('action.html', action='Контрагент "' + name + '" был упешно добавлен')
+
+    return render_template('addcontractor.html')
+
+
+@app.route('/edit/<table>', methods=['POST', 'GET'])
+def edit(table):
+    if 'login' not in session:
+        return render_template('login.html')
+    if request.method == 'POST':
+        if table == 'Пользователи':
+            try:
+                user = User.query.filter_by(id=int(request.form['idedit'])).first()
+                user.login = request.form['login']
+                user.password = request.form['password']
+                user.role = int(request.form['role'])
+                db.session.commit()
+            except:
+                return render_template('action.html', action="Не удалось найти указанного пользователя")
+            return render_template('action.html', action="Пользователь был успешно изменён")
+
+        if table == 'Товары':
+            try:
+                product = Product.query.filter_by(id=int(request.form['idedit'])).first()
+                product.name = request.form['name']
+                db.session.commit()
+            #     Возможно сделать предупреждение, что все записи товаров в накладных и на складе изменятся
+            except:
+                return render_template('action.html', action="Не удалось найти указаный товар")
+            return render_template('action.html', action="Товар был успешно изменён")
+        if table == 'Контрагенты':
+            try:
+                contractor = Contractor.query.filter_by(id=int(request.form['idedit'])).first()
+                contractor.name = request.form['name']
+                contractor.role = int(request.form['role'])
+                db.session.commit()
+            #     Возможно сделать предупреждение тоже
+            except:
+                return render_template('action.html', action="Не удалось найти контрагента")
+            return render_template('action.html', action="Контрагент был успешно изменён")
+
+    if request.method == 'GET':
+        obj = tables[table]
+        id = int(request.args.get('idedit'))
+        try:
+            item = obj.query.filter_by(id=id).first()
+            if item != None:
+                return render_template('edit.html', table=table, item=item)
+            return render_template('action.html', action='Запись не найдена')
+        except:
+            return render_template('action.html',
+                                   action='Ошибка: соединение с базой данных не установлено. Попробуйте позже')
+
+
+@app.route('/delete/<table>', methods=['GET'])
+def delete(table):
+    if 'login' not in session:
+        return render_template('login.html')
+    name = str(table).lower()[:-1]
+    try:
+        obj = tables[table]
+        item = obj.query.filter_by(id=int(request.args.get('iddel'))).first()
+        db.session.delete(item)
+        db.session.commit()
+    except:
+        return render_template('action.html', action="Запись не найдена. Возможно " + name + " уже удалён")
+
+    return render_template('action.html', action=name + ' успешно удалён')
+
+
+@app.route('/add/cust', methods=['POST', 'GET'])
+def add_cust():
+    if request.method == 'GET':
+        # many queries
+        return render_template('addcust.html', wh=Warehouse.query.all(), contractors=Contractor.query.all())
+    if request.method == 'POST':
+        name = request.form['name']
+        date = datetime.datetime.strptime(str(request.form['date']), '%Y-%m-%d')
+        # date = request.form['date']
+        wh_id = int(request.form['wh'])
+        c_id = int(request.form['contractor'])
+        typ = int(request.form['type'])
+        new_date = str(date.day) +'-'+ str(date.month) +'-'+ str(date.year)
+
+        if typ==1:
+            products = Product.query.all()
+        else:
+            products = db.session.query(Product, product_on_wh).filter(Product.id == product_on_wh.c.product_id).all()
+        try:
+            cust = None
+            cust = Cust(name=name, date=new_date, c_id=c_id, wh_id=wh_id, type=typ)
+            db.session.add(cust)
+            db.session.commit()
+        # table = db.session.query(Product, product_on_wh).filter(Product.id == product_on_wh.c.product_id).all()
+        # Cust is empty, so table here is not required
+        except Exception as e:
+            return render_template('action.html', action="Сбой создания накладной. Попробуйте позже.")
+
+        return render_template('pr_to_cust.html', tablename=name, c_id=cust.id, custtype=typ, table=[], products=products)
