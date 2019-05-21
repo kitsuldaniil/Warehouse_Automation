@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{%block content%}
+
+<div class="main-wrap" style="min-width: 850px;">
+  <div class="main_content">
+    <div class="header">
+     Накладная "{{tablename}}" <a class="stanlink" href="/">| Меню</a>
+    </div>
+    <div class="lineblock">
+    </div>
+
+    <table cellspacing='0'>
+        <tr>
+            <th>№</th>
+            <th>Товар</th>
+            <th>Количество</th>
+            <th>Цена</th>
+        </tr>
+
+        {% for item in table %}
+        <tr>
+               <td>{{ loop.index }}</td>
+               <td>{{item[0].name}}</td>
+               <td>{{ item.count }}</td>
+               <td>{{ item.price }}</td>
+         </tr>
+       {% endfor %}
+</table>
+<div class="lineblock">
+</div>
+  <div class="main_content" style="margin-top: 10%;">
+    <div class="header">
+    <br>
+      <div class="lineblock">
+    </div>
+      Новый товар
+    </div>
+    <form action={{ url_for('pr_to_cust') }} method="POST">
+        <input type="text" hidden value={{ c_id }} name="c_id">
+
+        <table cellspacing='0'>
+        <tr>
+            <th>
+                <select name="product_id" required style="width: 200px">
+                 {% f{% if custtype==1 %}
+                    <or p in products %}
+                     option value={{ p.id }}>{{ p.name }}</option>
+                     {% elif custtype==2 %}
+                         <option value={{ p.product_id }}>{{ p[0].name }}</option>
+                     {% endif %}
+                 {% endfor %}
+                </select>
+            </th>
+            <th><input placeholder='Количество' type='number' name='count' required></th>
+            <th><input placeholder='Цена' type='number' name='price' required></th>
+        </tr>
+    </table>
+
+    <button class="buttons" style="min-width: 88%; margin-left: auto; margin-right: auto; margin-bottom: 15px; font-size: 28px;
+  text-decoration: none;
+  color: white; font-family: 'Poiret One', cursive; cursor: pointer;">
+      Добавить</button>
+    </form>
+  <form action={{ url_for('dash') }} method="GET">
+      <button class="buttons" style="min-width: 88%; margin-left: auto; margin-right: auto; margin-bottom: 15px; font-size: 28px;
+  text-decoration: none;
+  color: white; font-family: 'Poiret One', cursive; cursor: pointer;">Завершить создание</button>
+  </form>
+
+  </div>
+</div>
+{% endblock %}
