@@ -280,3 +280,91 @@ def add_cust():
             return render_template('action.html', action="Сбой создания накладной. Попробуйте позже.")
 
         return render_template('pr_to_cust.html', tablename=name, c_id=cust.id, custtype=typ, table=[], products=products)
+		
+@app.route('/add/pr_to_cust', methods=['POST', 'GET'])
+def pr_to_cust():
+    if request.method == 'POST':
+        c_id = int(request.form['c_id'])
+        product_id = int(request.form['product_id'])
+        count = int(request.form['count'])
+        price = float(request.form['price'])
+        cust = Cust.query.filter_by(id=c_id).first()
+
+        if cust.type == 2:
+            pr_on_wh = db.session.query(product_on_wh).filter_by(product_id=product_id).first()
+            if pr_on_wh.count < count:
+                return render_template('action.html', action='Недостаточно товара на складе')
+            products = db.session.query(Product, product_on_wh).filter(Product.id == product_on_wh.c.product_id).all()
+        else:
+            products = Product.query.all()
+        ins = product_in_cust.insert().values(cust_id=c_id, product_id=product_id, count=count, price=price)
+        conn = engine.connect()
+        conn.execute(ins)
+
+        cust = Cust.query.filter_by(id=c_id).first()
+        table = db.session.query(Product, product_in_cust).filter(Product.id == product_in_cust.c.product_id) \
+            .filter(product_in_cust.c.cust_id == c_id).all()
+        return render_template('pr_to_cust.html', tablename=cust.name, c_id=cust.id, custtype=cust.type, table=table, products=products)
+    return render_template('addcust.html')
+
+'''
+stmt = users.update().\
+            where(users.c.id==5).\
+            values(name='user #5')          
+            db_uri = 'sqlite:///db.sqlite'
+engine = create_engine(db_uri)
+'''
+
+
+@app.route('/execute', methods=['GET'])
+def execute():
+    # if request.method == 'POST':
+    cust_id = int(request.args['cust_id'])
+    cust = Cust.query.filter_by(id=cust_id).first()
+    # result = db.session.query(product_on_wh).all()
+    # print(str(result))
+    query = db.session.query(product_in_cust).filter(product_in_cust.c.cust_id == cust_id).all()
+    if cust.type == 1:
+        for q in query:
+            item = db.session.query(product_on_wh).filter_by(product_id=q.product_id).first() # distinct
+            if item != None:
+                new_count = item.count + q.count
+
+                up = product_on_wh.update().where(product_on_wh.c.product_id == item.product_id).\
+                                                values(count=new_count)
+                conn = engine.connect()
+                conn.execute(up)
+            else:
+                ins = product_on_wh.insert().values(wh_id=1, product_id=q.product_id, count=q.count, price=q.price)
+                conn = engine.connect()
+                conn.execute(ins)
+                # product_on_wh.insert(1, q.product_id, q.count, q.price)
+                # db.session.commit()
+    if cust.type == 2:
+        for q in query:
+            item = db.session.query(product_on_wh).filter_by(product_id=q.product_id).first()  # find product on wh by product_id in cust
+            if item != None:    # q - объект товара в накладной   item - товар на складе
+                if item.count < q.count:
+                    db.session.rollback()
+                    product = Product.query.filter_by(id=item.product_id).first()
+                    return render_template('action.html', action='Недостаточное количество товара "'
+                                                                 + product.name + '" на складе')
+                elif item.count == q.count:
+                    deletion = product_on_wh.delete().where(product_on_wh.c.product_id == item.product_id)
+                    conn = engine.connect()
+                    conn.execute(deletion)
+                else:
+                    new_count = item.count - q.count
+                    up = product_on_wh.update().where(product_on_wh.c.product_id == item.product_id). \
+                        values(count=new_count)
+                    conn = engine.connect()
+                    conn.execute(up)
+    cust = None
+    try:
+        # cust = Cust.query.filter_by(id=cust_id).first()
+        # db.session.delete(cust)
+        # db.session.commit()
+        del_cust(cust_id)
+    except:
+        return render_template('action.html', action='Накладная не удалена')
+    return render_template('action.html', action='Накладная проведена успешно')

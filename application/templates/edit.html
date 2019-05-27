@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{%block content%}
+<div class="main-wrap">
+  <div class="main_content" style="margin-top: 10%;">
+    <div class="header">
+      Система учета товаров на складе
+    <br>
+      <div class="lineblock">
+      </div>
+{#                                                                 User #}
+  {% if table=='Пользователи' %}
+
+      Редактирование пользователя
+    </div>
+    <div class="lineblock">
+    </div>
+    <form action={{ url_for('edit', table='Пользователи') }} method="POST">
+        <input type="hidden" name="idedit" value="{{item.id}}">
+        <input placeholder='Логин' type='text' name='login' value="{{item.login}}" required>
+        <input placeholder='Пароль' type='text' name='password' value="{{item.password}}" required>
+
+
+        <select name="role" required style="width: 526px">
+            {% if item.role == 1 %}
+                <option selected value=1>Администратор</option>
+                <option value=2>Менеджер</option>
+                <option value=3>Работник склада</option>
+            {% elif item.role == 2 %}
+                <option value=1>Администратор</option>
+                <option selected value=2>Менеджер</option>
+                 <option value=3>Работник склада</option>
+            {% else %}
+
+                <option value=2>Менеджер</option>
+                <option value=1>Администратор</option>
+                <option selected value=3>Работник склада</option>
+            {% endif %}
+{#                <option value=1>Администратор</option>#}
+{#                <option value=2>Менеджер</option>#}
+{#                <option value=3>Работник склада</option>#}
+		</select>
+
+        <button class="buttons" style="min-width: 88%; margin-left: auto; margin-right: auto; margin-bottom: 15px; font-size: 28px;
+      text-decoration: none;
+      color: white; font-family: 'Poiret One', cursive; cursor: pointer;">
+          Изменить</button>
+    </form>
+{#                                                                Product#}
+  {% elif table=='Товары' %}
+      Редактирование товара
+    </div>
+    <div class="lineblock">
+    </div>
+    <form action={{ url_for('edit', table='Товары') }} method="POST">
+        <input type="hidden" name="idedit" value="{{item.id}}">
+        <input placeholder='Название' type='text' name='name' value="{{item.name}}" required>
+            <button class="buttons" style="min-width: 88%; margin-left: auto; margin-right: auto; margin-bottom: 15px; font-size: 28px;
+          text-decoration: none;
+          color: white; font-family: 'Poiret One', cursive; cursor: pointer;">
+              Изменить
+            </button>
+    </form>
+{#                                                              CONTRACTOR       #}
+{% elif table=='Контрагенты' %}
+
+      Редактирование контрагента
+    </div>
+    <div class="lineblock">
+    </div>
+    <form action={{ url_for('edit', table='Контрагенты') }} method="POST">
+        <input type="hidden" name="idedit" value="{{item.id}}">
+         <input placeholder='Название контрагента' type='text' name='name' value="{{item.name}}" required>
+
+        <select name="role" required style="width: 526px">
+            {% if item.role == 1 %}
+                <option selected value=1>Продавец</option>
+                <option value=2>Покупатель</option>
+            {% else %}
+                <option selected value=2>Покупатель</option>
+                <option value=1>Продавец</option>
+            {% endif %}
+        </select>
+        <button class="buttons" style="min-width: 88%; margin-left: auto; margin-right: auto; margin-bottom: 15px; font-size: 28px;
+      text-decoration: none;
+      color: white; font-family: 'Poiret One', cursive; cursor: pointer;">
+          Изменить
+        </button>
+    </form>
+{% endif %}
+
+<form action={{ url_for('dash') }}>
+ <button class="buttons" a style="min-width: 88%; margin-left: auto; margin-right: auto; margin-bottom: 15px; font-size: 28px;
+      text-decoration: none;
+      color: white; font-family: 'Poiret One', cursive; cursor: pointer;">
+          Меню
+        </button>
+</form>
+{#     <div class="buttons">#}
+{#          <a href="/"#}
+{#          style="min-width: 88%; margin-left: auto; margin-right: auto; margin-bottom: 15px; font-size: 28px;#}
+{#      text-decoration: none;#}
+{#      color: white; font-family: 'Poiret One', cursive; cursor: pointer;">Меню</a>#}
+{#        </div>#}
+{%endblock%}
