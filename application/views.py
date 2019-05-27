@@ -368,3 +368,34 @@ def execute():
     except:
         return render_template('action.html', action='Накладная не удалена')
     return render_template('action.html', action='Накладная проведена успешно')
+@app.route('/delete/cust', methods=['GET'])
+def delete_cust():
+    if 'login' not in session:
+        return render_template('login.html')
+    # try:
+        # obj = tables[table]
+    item = Cust.query.filter_by(id=int(request.args.get('iddel'))).first()
+    db.session.delete(item)
+    db.session.commit()
+    # except:
+    #     return render_template('action.html', action="Запись не найдена. Возможно накладная уже удалена")
+
+    return render_template('action.html', action='Накладная успешно удалена')
+
+
+
+def del_cust(id):
+    cust = Cust.query.filter(Cust.id == id).first()
+    db.session.delete(cust)
+    db.session.commit()
+
+def get_product_name(product_id):
+    query = Product.query.get(product_id).first()
+    return query.name
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+"""
+"""
