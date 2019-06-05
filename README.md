@@ -6,7 +6,7 @@
 ## Ссылки:
  * [Демо видео на YouTube](https://youtu.be/Vz0B_Tyz3dA)
  * [Trello](https://trello.com/b/3Oi2Gvdx/проект-по-автоматизации-складского-учёта "Ссылка на Trello")  
- * [RealTimeBoard](https://realtimeboard.com/app/board/o9J_kxmYiE4=/ "Ссылка на RealTimeBoard") 
+ * [RealTimeBoard](https://miro.com/app/board/o9J_kxBW9VY=/ "Ссылка на RealTimeBoard") 
 ***
 ## Описание элементов репозитория:
 * В папке [application](https://github.com/kitsuldaniil/Warehouse_Automation/tree/master/application) содержатся программные файлы приложения.
